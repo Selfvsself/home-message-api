@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: home-texttotext-api
+
+server:
+  port: ${PORT_NUMBER}
+
+chat:
+  openai:
+    baseUrl: ${OPENAI_BASE_URL}
+    chatUrl: ${OPENAI_CHAT_URL}
+    token: ${OPENAI_TOKEN}
