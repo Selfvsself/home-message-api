@@ -8,8 +8,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 public class HomeTextToTextApiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(HomeTextToTextApiApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(HomeTextToTextApiApplication.class, args);
+    }
 
 }
