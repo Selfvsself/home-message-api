@@ -5,14 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Completion {
+public class TextResponse {
+    private String userId;
+    private String userName;
     private String model;
-    private double temperature;
-    private List<Message> messages;
+    private String content;
+    @Builder.Default
+    private boolean useMessageHistory = true;
+    @Builder.Default
+    private boolean useLocalChat = true;
 }
