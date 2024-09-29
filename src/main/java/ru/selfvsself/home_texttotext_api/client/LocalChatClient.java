@@ -7,9 +7,9 @@ import ru.selfvsself.home_texttotext_api.config.FeignConfig;
 import ru.selfvsself.home_texttotext_api.model.client.Completion;
 import ru.selfvsself.home_texttotext_api.model.client.CompletionResponse;
 
-@FeignClient(name = "local", url = "${chat.local.baseUrl}", configuration = FeignConfig.class)
+@FeignClient(name = "local", url = "${chat.local.base-url}", configuration = FeignConfig.class)
 public interface LocalChatClient {
 
-    @RequestMapping(method = RequestMethod.POST, value = "${chat.local.chatUrl}", produces = "application/json")
+    @RequestMapping(method = RequestMethod.POST, value = "${chat.local.chat-url}", produces = "application/json")
     CompletionResponse chat(Completion request);
 }

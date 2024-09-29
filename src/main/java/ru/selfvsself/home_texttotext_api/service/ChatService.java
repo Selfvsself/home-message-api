@@ -1,6 +1,8 @@
 package ru.selfvsself.home_texttotext_api.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import ru.selfvsself.home_texttotext_api.model.TextRequest;
 import ru.selfvsself.home_texttotext_api.model.TextResponse;
@@ -16,10 +18,24 @@ public class ChatService {
 
     private final OpenAIChatService openAIService;
     private final LocalChatService localChatService;
+    private final KafkaTemplate<String, Completion> kafkaTemplate;
 
-    public ChatService(OpenAIChatService openAIService, LocalChatService localChatService) {
+    @Value("${kafka.topic.incoming}")
+    private String topicName;
+
+    public ChatService(OpenAIChatService openAIService, LocalChatService localChatService, KafkaTemplate<String, Completion> kafkaTemplate) {
         this.openAIService = openAIService;
         this.localChatService = localChatService;
+        this.kafkaTemplate = kafkaTemplate;
+    }
+
+    public TextRequest createRequest(TextRequest textRequest) {
+        Completion completion = Completion
+                .builder()
+                .messages(List.of(new Message(Role.user, textRequest.getContent())))
+                .build();
+        kafkaTemplate.send(topicName, completion);
+        return textRequest;
     }
 
     public TextResponse getAnswer(TextRequest textRequest) {

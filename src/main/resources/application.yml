@@ -7,9 +7,15 @@ server:
 
 chat:
   openai:
-    baseUrl: ${OPENAI_BASE_URL}
-    chatUrl: ${OPENAI_CHAT_URL}
+    base-url: ${OPENAI_BASE_URL}
+    chat-url: ${OPENAI_CHAT_URL}
     token: ${OPENAI_TOKEN}
   local:
-    baseUrl: ${LOCAL_BASE_URL}
-    chatUrl: ${LOCAL_CHAT_URL}
+    base-url: ${LOCAL_BASE_URL}
+    chat-url: ${LOCAL_CHAT_URL}
+
+kafka:
+  bootstrap-url: ${KAFKA_BOOTSTRAP_URL}
+  group: ${KAFKA_GROUP_ID}
+  topic:
+    incoming: ${KAFKA_TOPIC_NAME}
