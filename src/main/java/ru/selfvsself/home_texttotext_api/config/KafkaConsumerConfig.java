@@ -11,7 +11,7 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import ru.selfvsself.home_texttotext_api.model.client.Completion;
+import ru.selfvsself.home_texttotext_api.model.TextRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,22 +27,22 @@ public class KafkaConsumerConfig {
     private String groupId;
 
     @Bean
-    public ConsumerFactory<String, Completion> completionConsumerFactory() {
+    public ConsumerFactory<String, TextRequest> textRequestConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, Completion.class.getName());
+        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, TextRequest.class.getName());
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Completion> completionKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Completion> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(completionConsumerFactory());
+    public ConcurrentKafkaListenerContainerFactory<String, TextRequest> textRequestKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, TextRequest> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(textRequestConsumerFactory());
         return factory;
     }
 }

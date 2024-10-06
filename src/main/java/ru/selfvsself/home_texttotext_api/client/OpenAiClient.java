@@ -1,15 +1,28 @@
 package ru.selfvsself.home_texttotext_api.client;
 
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import ru.selfvsself.home_texttotext_api.config.OpenAiFeignConfig;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import ru.selfvsself.home_texttotext_api.model.client.Completion;
 import ru.selfvsself.home_texttotext_api.model.client.CompletionResponse;
 
-@FeignClient(name = "openai", url = "${chat.openai.base-url}", configuration = OpenAiFeignConfig.class)
-public interface OpenAiClient {
+@Service
+public class OpenAiClient {
+    @Value("${chat.openai.chat-url}")
+    private String chatUrl;
+    private final WebClient webClient;
 
-    @RequestMapping(method = RequestMethod.POST, value = "${chat.openai.chat-url}", produces = "application/json")
-    CompletionResponse chat(Completion request);
+    public OpenAiClient(WebClient openAiWebClient) {
+        this.webClient = openAiWebClient;
+    }
+
+    public CompletionResponse chat(Completion requestPayload) {
+        return webClient.post()
+                .uri(chatUrl)
+                .body(Mono.just(requestPayload), Completion.class)
+                .retrieve()
+                .bodyToMono(CompletionResponse.class)
+                .block();
+    }
 }

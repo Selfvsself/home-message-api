@@ -6,30 +6,33 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import ru.selfvsself.home_texttotext_api.model.TextRequest;
 import ru.selfvsself.home_texttotext_api.model.TextResponse;
-import ru.selfvsself.home_texttotext_api.model.client.*;
+import ru.selfvsself.home_texttotext_api.model.client.Completion;
+import ru.selfvsself.home_texttotext_api.model.client.Message;
+import ru.selfvsself.home_texttotext_api.model.client.Role;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Service
 public class ChatService {
 
-    private final OpenAIChatService openAIService;
-    private final LocalChatService localChatService;
+    //    private final OpenAIChatService openAIService;
+//    private final LocalChatService localChatService;
     private final KafkaTemplate<String, Completion> kafkaTemplate;
+    private final UserService userService;
 
     @Value("${kafka.topic.incoming}")
     private String topicName;
 
-    public ChatService(OpenAIChatService openAIService, LocalChatService localChatService, KafkaTemplate<String, Completion> kafkaTemplate) {
-        this.openAIService = openAIService;
-        this.localChatService = localChatService;
+    public ChatService(KafkaTemplate<String, Completion> kafkaTemplate, UserService userService) {
+//        this.openAIService = openAIService;
+//        this.localChatService = localChatService;
         this.kafkaTemplate = kafkaTemplate;
+        this.userService = userService;
     }
 
     public TextRequest createRequest(TextRequest textRequest) {
+        userService.addUserIfNotExists(textRequest.getChatId(), textRequest.getUserName());
         Completion completion = Completion
                 .builder()
                 .messages(List.of(new Message(Role.user, textRequest.getContent())))
@@ -43,11 +46,11 @@ public class ChatService {
                 .builder()
                 .messages(List.of(new Message(Role.user, textRequest.getContent())))
                 .build();
-        CompletableFuture<ClientResponse> clientOneResponse = openAIService.getAnswer(completion);
-        CompletableFuture<ClientResponse> clientTwoResponse = localChatService.getAnswer(completion);
+//        CompletableFuture<ClientResponse> clientOneResponse = openAIService.getAnswer(completion);
+//        CompletableFuture<ClientResponse> clientTwoResponse = localChatService.getAnswer(completion);
 
         TextResponse answer = TextResponse.builder()
-                .userId(textRequest.getUserId())
+                .chatId(textRequest.getChatId())
                 .userName(textRequest.getUserName())
                 .useMessageHistory(textRequest.isUseMessageHistory())
                 .useLocalChat(textRequest.isUseLocalChat())
@@ -55,30 +58,30 @@ public class ChatService {
                 .content("Ошибка получения ответа")
                 .build();
 
-        try {
-            ClientResponse openAiResponse = clientOneResponse.get();
-            ClientResponse localChatResponse = clientTwoResponse.get();
-
-            log.info(openAiResponse.toString());
-            log.info(localChatResponse.toString());
-
-            ClientResponse selectedResponse = null;
-            if (openAiResponse.getType().equals(ResponseType.SUCCESS)
-                    && localChatResponse.getType().equals(ResponseType.SUCCESS)) {
-                selectedResponse = openAiResponse;
-            } else if (openAiResponse.getType().equals(ResponseType.SUCCESS)) {
-                selectedResponse = openAiResponse;
-            } else if (localChatResponse.getType().equals(ResponseType.SUCCESS)) {
-                selectedResponse = localChatResponse;
-            }
-
-            if (selectedResponse != null) {
-                answer.setModel(selectedResponse.getModel());
-                answer.setContent(selectedResponse.getContent());
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            ClientResponse openAiResponse = clientOneResponse.get();
+//            ClientResponse localChatResponse = clientTwoResponse.get();
+//
+//            log.info(openAiResponse.toString());
+//            log.info(localChatResponse.toString());
+//
+//            ClientResponse selectedResponse = null;
+//            if (openAiResponse.getType().equals(ResponseType.SUCCESS)
+//                    && localChatResponse.getType().equals(ResponseType.SUCCESS)) {
+//                selectedResponse = openAiResponse;
+//            } else if (openAiResponse.getType().equals(ResponseType.SUCCESS)) {
+//                selectedResponse = openAiResponse;
+//            } else if (localChatResponse.getType().equals(ResponseType.SUCCESS)) {
+//                selectedResponse = localChatResponse;
+//            }
+//
+//            if (selectedResponse != null) {
+//                answer.setModel(selectedResponse.getModel());
+//                answer.setContent(selectedResponse.getContent());
+//            }
+//        } catch (InterruptedException | ExecutionException e) {
+//            e.printStackTrace();
+//        }
 
         return answer;
     }

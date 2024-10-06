@@ -1,6 +1,17 @@
 spring:
   application:
     name: home-texttotext-api
+  datasource:
+    userdb:
+      jdbc-url: ${USER_DB_URL}
+      driverClassName: org.postgresql.Driver
+      username: ${USER_DB_USERNAME}
+      password: ${USER_DB_PASSWORD}
+      table-scheme: ${USER_DB_TABLE_SCHEME}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
 
 server:
   port: ${PORT_NUMBER}

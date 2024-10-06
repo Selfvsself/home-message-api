@@ -15,7 +15,6 @@ import ru.selfvsself.home_texttotext_api.service.ChatService;
 @RequestMapping("/chat")
 @RestController
 public class ChatController {
-
     private final ChatService chatService;
 
     public ChatController(ChatService chatService) {
@@ -25,7 +24,13 @@ public class ChatController {
     @PostMapping("/completions")
     public ResponseEntity<?> chat(@RequestBody TextRequest request) {
         if (!StringUtils.hasLength(request.getContent())) {
-            return new ResponseEntity<>("Content field must not be empty", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("'content' field must not be empty", HttpStatus.BAD_REQUEST);
+        }
+        if (!StringUtils.hasLength(request.getUserName())) {
+            return new ResponseEntity<>("'userName' field must not be empty", HttpStatus.BAD_REQUEST);
+        }
+        if (request.getChatId() == null) {
+            return new ResponseEntity<>("'chatId' field must not be empty", HttpStatus.BAD_REQUEST);
         }
 
         return ResponseEntity.ok(chatService.createRequest(request));

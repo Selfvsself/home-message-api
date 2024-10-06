@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class TextRequest {
-    private String userId;
+    private Long chatId;
     private String userName;
     private String content;
     private boolean useMessageHistory = true;
