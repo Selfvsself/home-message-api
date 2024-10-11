@@ -16,6 +16,7 @@ public class UserService {
     public User addUserIfNotExists(Long chatId, String name) {
         Optional<User> existingUser = userRepository.findByChatId(chatId);
         if (existingUser.isPresent()) {
+            return existingUser.get();
         }
         User newUser = new User(chatId, name);
         return userRepository.save(newUser);

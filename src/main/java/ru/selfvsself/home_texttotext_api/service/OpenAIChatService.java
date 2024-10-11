@@ -27,7 +27,7 @@ public class OpenAIChatService {
                 .builder()
                 .model(StringUtils.hasLength(completion.getModel()) ? completion.getModel() : DEFAULT_MODEL)
                 .temperature(completion.getTemperature() == null ? 0.4 : completion.getTemperature())
-                .messages(completion.getMessages())
+                .completionMessages(completion.getCompletionMessages())
                 .build();
         return CompletableFuture.completedFuture(getAnswerAsync(request));
     }
@@ -44,8 +44,8 @@ public class OpenAIChatService {
                     .orElseThrow(() -> new RuntimeException("Response don't have choices"));
             if (!choices.isEmpty()) {
                 var content = Optional.ofNullable(choices.get(0))
-                        .map(CompletionResponse.Choice::getMessage)
-                        .map(Message::getContent)
+                        .map(CompletionResponse.Choice::getCompletionMessage)
+                        .map(CompletionMessage::getContent)
                         .orElseThrow(() -> new RuntimeException("Response don't have content"));
                 answer = new ClientResponse(response.getModel(), content, ResponseType.SUCCESS);
             }

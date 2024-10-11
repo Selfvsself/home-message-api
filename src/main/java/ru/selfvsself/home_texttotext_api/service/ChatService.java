@@ -7,8 +7,11 @@ import org.springframework.stereotype.Service;
 import ru.selfvsself.home_texttotext_api.model.TextRequest;
 import ru.selfvsself.home_texttotext_api.model.TextResponse;
 import ru.selfvsself.home_texttotext_api.model.client.Completion;
-import ru.selfvsself.home_texttotext_api.model.client.Message;
+import ru.selfvsself.home_texttotext_api.model.client.CompletionMessage;
 import ru.selfvsself.home_texttotext_api.model.client.Role;
+import ru.selfvsself.home_texttotext_api.model.database.Message;
+import ru.selfvsself.home_texttotext_api.model.database.MessageStatus;
+import ru.selfvsself.home_texttotext_api.model.database.User;
 
 import java.util.List;
 
@@ -20,31 +23,44 @@ public class ChatService {
 //    private final LocalChatService localChatService;
     private final KafkaTemplate<String, Completion> kafkaTemplate;
     private final UserService userService;
+    private final MessageService messageService;
 
     @Value("${kafka.topic.incoming}")
     private String topicName;
 
-    public ChatService(KafkaTemplate<String, Completion> kafkaTemplate, UserService userService) {
+    public ChatService(KafkaTemplate<String, Completion> kafkaTemplate, UserService userService, MessageService messageService) {
 //        this.openAIService = openAIService;
 //        this.localChatService = localChatService;
         this.kafkaTemplate = kafkaTemplate;
         this.userService = userService;
+        this.messageService = messageService;
     }
 
     public TextRequest createRequest(TextRequest textRequest) {
-        userService.addUserIfNotExists(textRequest.getChatId(), textRequest.getUserName());
+        User user = userService.addUserIfNotExists(textRequest.getChatId(), textRequest.getUserName());
         Completion completion = Completion
                 .builder()
-                .messages(List.of(new Message(Role.user, textRequest.getContent())))
+                .completionMessages(List.of(new CompletionMessage(Role.user, textRequest.getContent())))
                 .build();
         kafkaTemplate.send(topicName, completion);
+
+        Message message = Message
+                .builder()
+                .userId(user.getId())
+                .role(Role.user)
+                .status(MessageStatus.PROCESSED)
+                .tokens(0)
+                .content(textRequest.getContent())
+                .model("User request")
+                .build();
+        messageService.createMessage(message);
         return textRequest;
     }
 
     public TextResponse getAnswer(TextRequest textRequest) {
         Completion completion = Completion
                 .builder()
-                .messages(List.of(new Message(Role.user, textRequest.getContent())))
+                .completionMessages(List.of(new CompletionMessage(Role.user, textRequest.getContent())))
                 .build();
 //        CompletableFuture<ClientResponse> clientOneResponse = openAIService.getAnswer(completion);
 //        CompletableFuture<ClientResponse> clientTwoResponse = localChatService.getAnswer(completion);

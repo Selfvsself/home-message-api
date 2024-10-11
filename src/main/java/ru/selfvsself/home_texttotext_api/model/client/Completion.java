@@ -14,5 +14,5 @@ import java.util.List;
 public class Completion {
     private String model;
     private Double temperature;
-    private List<Message> messages;
+    private List<CompletionMessage> completionMessages;
 }

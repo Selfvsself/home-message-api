@@ -1,13 +1,23 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: home-texttotext-api
   datasource:
     userdb:
       jdbc-url: ${USER_DB_URL}
+      url: ${USER_DB_URL}
       driverClassName: org.postgresql.Driver
       username: ${USER_DB_USERNAME}
       password: ${USER_DB_PASSWORD}
       table-scheme: ${USER_DB_TABLE_SCHEME}
+    messagedb:
+      jdbc-url: ${MESSAGE_DB_URL}
+      url: ${MESSAGE_DB_URL}
+      driverClassName: org.postgresql.Driver
+      username: ${MESSAGE_DB_USERNAME}
+      password: ${MESSAGE_DB_PASSWORD}
+      table-scheme: ${MESSAGE_DB_TABLE_SCHEME}
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:

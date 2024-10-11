@@ -36,8 +36,8 @@ public class LocalChatService {
                     .orElseThrow(() -> new RuntimeException("Response don't have choices"));
             if (!choices.isEmpty()) {
                 var content = Optional.ofNullable(choices.get(0))
-                        .map(CompletionResponse.Choice::getMessage)
-                        .map(Message::getContent)
+                        .map(CompletionResponse.Choice::getCompletionMessage)
+                        .map(CompletionMessage::getContent)
                         .orElseThrow(() -> new RuntimeException("Response don't have content"));
                 answer = new ClientResponse(response.getModel(), content, ResponseType.SUCCESS);
             }
