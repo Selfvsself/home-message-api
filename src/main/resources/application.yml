@@ -27,6 +27,7 @@ server:
   port: ${PORT_NUMBER}
 
 chat:
+  max-tokens: 3000
   openai:
     base-url: ${OPENAI_BASE_URL}
     chat-url: ${OPENAI_CHAT_URL}

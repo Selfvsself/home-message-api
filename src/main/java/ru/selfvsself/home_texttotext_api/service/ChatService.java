@@ -38,4 +38,18 @@ public class ChatService {
         }
         return answer;
     }
+
+    public ClientResponse getAnswerLocally(Completion completion) {
+        ClientResponse answer = new ClientResponse();
+        try {
+            ClientResponse localChatResponse = localChatService.getAnswer(completion);
+            log.info(localChatResponse.toString());
+            if (ResponseType.SUCCESS.equals(localChatResponse.getType())) {
+                return localChatResponse;
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return answer;
+    }
 }

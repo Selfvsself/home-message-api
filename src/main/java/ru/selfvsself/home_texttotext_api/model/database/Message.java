@@ -31,7 +31,7 @@ public class Message {
     @Column(nullable = false)
     private Integer tokens;
 
-    @Column()
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column(nullable = false)
