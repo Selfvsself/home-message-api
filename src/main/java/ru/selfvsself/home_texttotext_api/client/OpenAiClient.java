@@ -9,9 +9,9 @@ import ru.selfvsself.home_texttotext_api.model.client.CompletionResponse;
 
 @Service
 public class OpenAiClient {
+    private final WebClient webClient;
     @Value("${chat.openai.chat-url}")
     private String chatUrl;
-    private final WebClient webClient;
 
     public OpenAiClient(WebClient openAiWebClient) {
         this.webClient = openAiWebClient;

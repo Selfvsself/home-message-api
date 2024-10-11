@@ -10,10 +10,9 @@ import ru.selfvsself.home_texttotext_api.model.client.CompletionResponse;
 @Service
 public class LocalChatClient {
 
+    private final WebClient webClient;
     @Value("${chat.local.chat-url}")
     private String chatUrl;
-
-    private final WebClient webClient;
 
     public LocalChatClient(WebClient localChatWebClient) {
         this.webClient = localChatWebClient;

@@ -1,4 +1,4 @@
-package ru.selfvsself.home_texttotext_api.service;
+package ru.selfvsself.home_texttotext_api.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,7 +8,7 @@ import ru.selfvsself.home_texttotext_api.repository.UserRepository;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserClient {
 
     @Autowired
     private UserRepository userRepository;

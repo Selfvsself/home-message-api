@@ -14,8 +14,4 @@ public class TextResponse {
     private String userName;
     private String model;
     private String content;
-    @Builder.Default
-    private boolean useMessageHistory = true;
-    @Builder.Default
-    private boolean useLocalChat = true;
 }

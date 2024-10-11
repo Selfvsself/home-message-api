@@ -14,5 +14,11 @@ import java.util.List;
 public class Completion {
     private String model;
     private Double temperature;
-    private List<CompletionMessage> completionMessages;
+    private List<CompletionMessage> messages;
+
+    public Completion(Completion completion) {
+        this.model = completion.getModel();
+        this.temperature = completion.getTemperature();
+        this.messages = completion.getMessages();
+    }
 }

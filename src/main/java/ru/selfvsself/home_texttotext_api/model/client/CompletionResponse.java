@@ -16,7 +16,7 @@ public class CompletionResponse {
     @NoArgsConstructor
     public static class Choice {
         private int index;
-        private CompletionMessage completionMessage;
+        private CompletionMessage message;
     }
 
     @Data

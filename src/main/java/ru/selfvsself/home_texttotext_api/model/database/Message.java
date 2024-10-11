@@ -31,7 +31,7 @@ public class Message {
     @Column(nullable = false)
     private Integer tokens;
 
-    @Column(nullable = false)
+    @Column()
     private String content;
 
     @Column(nullable = false)
@@ -50,7 +50,7 @@ public class Message {
     @Enumerated(EnumType.STRING)
     private MessageStatus status;
 
-    @Column(nullable = false)
+    @Column()
     private String model;
 
     @Column(name = "request_id")
