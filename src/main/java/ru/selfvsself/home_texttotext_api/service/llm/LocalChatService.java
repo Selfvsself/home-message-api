@@ -4,12 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.selfvsself.home_texttotext_api.client.LocalModelClient;
 import ru.selfvsself.home_texttotext_api.model.client.*;
+import ru.selfvsself.home_texttotext_api.service.llm.api.BaseModelService;
 
 import java.util.Optional;
 
 @Slf4j
 @Service
-public class LocalChatService {
+public class LocalChatService implements BaseModelService {
 
     private static final Double DEFAULT_TEMPERATURE = 0.4;
     private final LocalModelClient localModelClient;
@@ -36,6 +37,16 @@ public class LocalChatService {
             log.error(e.getMessage());
         }
         return answer;
+    }
+
+    @Override
+    public boolean isLocalModel() {
+        return true;
+    }
+
+    @Override
+    public int getWeight() {
+        return 1;
     }
 
     private Completion prepareCompletion(Completion completion) {

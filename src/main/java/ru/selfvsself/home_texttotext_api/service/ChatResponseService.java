@@ -11,6 +11,7 @@ import ru.selfvsself.home_texttotext_api.model.database.MessageStatus;
 import ru.selfvsself.home_texttotext_api.model.database.User;
 import ru.selfvsself.home_texttotext_api.service.database.MessageService;
 import ru.selfvsself.home_texttotext_api.service.database.UserService;
+import ru.selfvsself.home_texttotext_api.service.llm.ModelSelectionService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,11 +111,7 @@ public class ChatResponseService {
     private ModelResponse getAnswer(ChatRequest chatRequest, User user) {
         ModelRequest modelRequest = createModelRequest(chatRequest, user.getId());
         ModelResponse modelResponse;
-        if (chatRequest.isUseLocalModel()) {
-            modelResponse = modelSelectionService.getAnswerLocally(modelRequest);
-        } else {
-            modelResponse = modelSelectionService.getAnswer(modelRequest);
-        }
+        modelResponse = modelSelectionService.getAnswer(modelRequest);
         log.info(modelResponse.toString());
         return modelResponse;
     }

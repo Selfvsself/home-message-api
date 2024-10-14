@@ -14,6 +14,7 @@ import java.util.UUID;
 @Entity
 @Builder
 @ToString
+@AllArgsConstructor
 @Table(name = "messages")
 public class Message {
 
