@@ -2,19 +2,19 @@ package ru.selfvsself.home_texttotext_api.service;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import ru.selfvsself.home_texttotext_api.model.TextRequest;
+import ru.selfvsself.home_texttotext_api.model.ChatRequest;
 
 @Service
 public class RequestConsumer {
 
-    private final MessageService messageService;
+    private final ChatResponseService chatResponseService;
 
-    public RequestConsumer(MessageService messageService) {
-        this.messageService = messageService;
+    public RequestConsumer(ChatResponseService chatResponseService) {
+        this.chatResponseService = chatResponseService;
     }
 
     @KafkaListener(topics = "${kafka.topic.incoming}", groupId = "${kafka.group}", containerFactory = "textRequestKafkaListenerContainerFactory")
-    public void requestProcessing(TextRequest order) {
+    public void requestProcessing(ChatRequest order) {
         System.out.println("Received completion: " + order);
     }
 }

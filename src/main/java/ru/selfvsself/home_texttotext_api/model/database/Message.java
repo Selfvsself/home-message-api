@@ -15,15 +15,12 @@ import java.util.UUID;
 @Builder
 @ToString
 @Table(name = "messages")
-@NoArgsConstructor
-@AllArgsConstructor
 public class Message {
 
     @Id
+    @Builder.Default
     @Column(unique = true, nullable = false)
-    @GeneratedValue
-    @UuidGenerator(style = UuidGenerator.Style.TIME)
-    private UUID id;
+    private UUID id = UUID.randomUUID();
 
     @Column(name = "user_id", unique = true, nullable = false)
     private UUID userId;
@@ -55,4 +52,8 @@ public class Message {
 
     @Column(name = "request_id")
     private UUID requestId;
+
+    public Message() {
+        this.id = UUID.randomUUID();
+    }
 }

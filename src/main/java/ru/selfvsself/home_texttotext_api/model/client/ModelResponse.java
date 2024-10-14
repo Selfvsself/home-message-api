@@ -4,17 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @AllArgsConstructor
-public class ClientResponse {
+public class ModelResponse {
     private String model;
     private String content;
     private ResponseType type;
     private Integer requestTokens;
     private Integer responseTokens;
+    private UUID requestId;
 
-    public ClientResponse() {
+    public ModelResponse() {
         this.type = ResponseType.ERROR;
         this.model = "Error";
         this.content = "Error";

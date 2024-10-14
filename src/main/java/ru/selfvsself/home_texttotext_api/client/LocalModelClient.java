@@ -8,13 +8,14 @@ import ru.selfvsself.home_texttotext_api.model.client.Completion;
 import ru.selfvsself.home_texttotext_api.model.client.CompletionResponse;
 
 @Service
-public class OpenAiClient {
+public class LocalModelClient {
+
     private final WebClient webClient;
-    @Value("${chat.openai.chat-url}")
+    @Value("${chat.local.chat-url}")
     private String chatUrl;
 
-    public OpenAiClient(WebClient openAiWebClient) {
-        this.webClient = openAiWebClient;
+    public LocalModelClient(WebClient localChatWebClient) {
+        this.webClient = localChatWebClient;
     }
 
     public CompletionResponse chat(Completion requestPayload) {

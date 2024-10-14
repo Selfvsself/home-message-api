@@ -2,7 +2,7 @@ package ru.selfvsself.home_texttotext_api.service.llm;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.selfvsself.home_texttotext_api.client.OpenAiClient;
+import ru.selfvsself.home_texttotext_api.client.ExternalModelClient;
 import ru.selfvsself.home_texttotext_api.model.client.*;
 
 import java.util.Optional;
@@ -13,20 +13,20 @@ public class OpenAIChatService {
 
     private static final String DEFAULT_MODEL = "gpt-4o-mini";
     private static final Double DEFAULT_TEMPERATURE = 0.4;
-    private final OpenAiClient openAiClient;
+    private final ExternalModelClient externalModelClient;
 
-    public OpenAIChatService(OpenAiClient openAiClient) {
-        this.openAiClient = openAiClient;
+    public OpenAIChatService(ExternalModelClient externalModelClient) {
+        this.externalModelClient = externalModelClient;
     }
 
-    public ClientResponse getAnswer(Completion completion) {
-        ClientResponse answer = new ClientResponse();
+    public ModelResponse getAnswer(Completion completion) {
+        ModelResponse answer = new ModelResponse();
         try {
             Completion openAiCompletion = prepareCompletion(completion);
-            var response = openAiClient.chat(openAiCompletion);
+            var response = externalModelClient.chat(openAiCompletion);
             log.info(response.toString());
             String content = getContentFromResponse(response);
-            answer = ClientResponse.builder()
+            answer = ModelResponse.builder()
                     .model(response.getModel())
                     .content(content)
                     .type(ResponseType.SUCCESS)

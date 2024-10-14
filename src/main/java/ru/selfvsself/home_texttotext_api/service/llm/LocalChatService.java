@@ -2,7 +2,7 @@ package ru.selfvsself.home_texttotext_api.service.llm;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.selfvsself.home_texttotext_api.client.LocalChatClient;
+import ru.selfvsself.home_texttotext_api.client.LocalModelClient;
 import ru.selfvsself.home_texttotext_api.model.client.*;
 
 import java.util.Optional;
@@ -12,20 +12,20 @@ import java.util.Optional;
 public class LocalChatService {
 
     private static final Double DEFAULT_TEMPERATURE = 0.4;
-    private final LocalChatClient localChatClient;
+    private final LocalModelClient localModelClient;
 
-    public LocalChatService(LocalChatClient localChatClient) {
-        this.localChatClient = localChatClient;
+    public LocalChatService(LocalModelClient localModelClient) {
+        this.localModelClient = localModelClient;
     }
 
-    public ClientResponse getAnswer(Completion completion) {
-        ClientResponse answer = new ClientResponse();
+    public ModelResponse getAnswer(Completion completion) {
+        ModelResponse answer = new ModelResponse();
         try {
             Completion localCompletion = prepareCompletion(completion);
-            var response = localChatClient.chat(localCompletion);
+            var response = localModelClient.chat(localCompletion);
             log.info(response.toString());
             String content = getContentFromResponse(response);
-            answer = ClientResponse.builder()
+            answer = ModelResponse.builder()
                     .model(response.getModel())
                     .content(content)
                     .type(ResponseType.SUCCESS)

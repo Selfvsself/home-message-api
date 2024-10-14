@@ -8,21 +8,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.selfvsself.home_texttotext_api.model.TextRequest;
-import ru.selfvsself.home_texttotext_api.service.MessageService;
+import ru.selfvsself.home_texttotext_api.model.ChatRequest;
+import ru.selfvsself.home_texttotext_api.service.ChatResponseService;
+
+import java.util.UUID;
 
 @Slf4j
 @RequestMapping("/chat")
 @RestController
-public class ChatController {
-    private final MessageService messageService;
+public class ChatRequestController {
+    private final ChatResponseService chatResponseService;
 
-    public ChatController(MessageService messageService) {
-        this.messageService = messageService;
+    public ChatRequestController(ChatResponseService chatResponseService) {
+        this.chatResponseService = chatResponseService;
     }
 
     @PostMapping("/completions")
-    public ResponseEntity<?> chat(@RequestBody TextRequest request) {
+    public ResponseEntity<?> chat(@RequestBody ChatRequest request) {
         if (!StringUtils.hasLength(request.getContent())) {
             return new ResponseEntity<>("'content' field must not be empty", HttpStatus.BAD_REQUEST);
         }
@@ -32,7 +34,10 @@ public class ChatController {
         if (request.getChatId() == null) {
             return new ResponseEntity<>("'chatId' field must not be empty", HttpStatus.BAD_REQUEST);
         }
+        if (request.getRequestId() == null) {
+            request.setRequestId(UUID.randomUUID());
+        }
 
-        return ResponseEntity.ok(messageService.processRequest(request));
+        return ResponseEntity.ok(chatResponseService.processRequest(request));
     }
 }

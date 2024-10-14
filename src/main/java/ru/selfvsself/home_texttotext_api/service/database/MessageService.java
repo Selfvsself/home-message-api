@@ -1,4 +1,4 @@
-package ru.selfvsself.home_texttotext_api.client;
+package ru.selfvsself.home_texttotext_api.service.database;
 
 import org.springframework.stereotype.Service;
 import ru.selfvsself.home_texttotext_api.model.database.Message;
@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class MessageClient {
+public class MessageService {
 
     private final MessageRepository messageRepository;
 
-    public MessageClient(MessageRepository messageRepository) {
+    public MessageService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
     }
 
