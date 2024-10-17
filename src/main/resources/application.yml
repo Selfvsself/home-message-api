@@ -40,4 +40,5 @@ kafka:
   bootstrap-url: ${KAFKA_BOOTSTRAP_URL}
   group: ${KAFKA_GROUP_ID}
   topic:
-    incoming: ${KAFKA_TOPIC_NAME}
+    request: ${KAFKA_REQUEST_TOPIC_NAME}
+    response: ${KAFKA_RESPONSE_TOPIC_NAME}

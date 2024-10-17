@@ -3,7 +3,7 @@ package ru.selfvsself.home_texttotext_api.service.llm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.selfvsself.home_texttotext_api.client.ExternalModelClient;
-import ru.selfvsself.home_texttotext_api.model.client.*;
+import ru.selfvsself.home_texttotext_api.model.*;
 import ru.selfvsself.home_texttotext_api.service.llm.api.BaseModelService;
 
 import java.util.Optional;

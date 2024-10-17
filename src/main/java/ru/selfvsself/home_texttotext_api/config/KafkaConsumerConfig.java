@@ -11,7 +11,7 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import ru.selfvsself.home_texttotext_api.model.ChatRequest;
+import ru.selfvsself.model.ChatRequest;
 
 import java.util.HashMap;
 import java.util.Map;

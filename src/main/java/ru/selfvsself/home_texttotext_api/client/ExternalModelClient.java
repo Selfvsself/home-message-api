@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import ru.selfvsself.home_texttotext_api.model.client.Completion;
-import ru.selfvsself.home_texttotext_api.model.client.CompletionResponse;
+import ru.selfvsself.home_texttotext_api.model.Completion;
+import ru.selfvsself.home_texttotext_api.model.CompletionResponse;
 
 @Service
 public class ExternalModelClient {

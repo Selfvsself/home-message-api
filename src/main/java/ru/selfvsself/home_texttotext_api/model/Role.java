@@ -1,4 +1,4 @@
-package ru.selfvsself.home_texttotext_api.model.client;
+package ru.selfvsself.home_texttotext_api.model;
 
 public enum Role {
     user,

@@ -8,7 +8,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import ru.selfvsself.home_texttotext_api.model.ChatRequest;
+import ru.selfvsself.model.ChatResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class KafkaProducerConfig {
     private String bootstrapServers;
 
     @Bean
-    public ProducerFactory<String, ChatRequest> completionProducerFactory() {
+    public ProducerFactory<String, ChatResponse> completionProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
@@ -29,7 +29,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, ChatRequest> userKafkaTemplate() {
+    public KafkaTemplate<String, ChatResponse> userKafkaTemplate() {
         return new KafkaTemplate<>(completionProducerFactory());
     }
 }

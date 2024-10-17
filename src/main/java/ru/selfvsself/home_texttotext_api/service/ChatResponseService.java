@@ -3,9 +3,9 @@ package ru.selfvsself.home_texttotext_api.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.selfvsself.home_texttotext_api.model.ChatRequest;
-import ru.selfvsself.home_texttotext_api.model.ChatResponse;
-import ru.selfvsself.home_texttotext_api.model.client.*;
+import ru.selfvsself.home_texttotext_api.model.*;
+import ru.selfvsself.model.ChatRequest;
+import ru.selfvsself.model.ChatResponse;
 import ru.selfvsself.home_texttotext_api.model.database.Message;
 import ru.selfvsself.home_texttotext_api.model.database.MessageStatus;
 import ru.selfvsself.home_texttotext_api.model.database.User;
@@ -75,6 +75,7 @@ public class ChatResponseService {
                 .role(Role.assistant)
                 .status(MessageStatus.PROCESSING_ERROR)
                 .tokens(0)
+                .content("Error")
                 .requestId(requestMessageId)
                 .build();
         messageService.createMessage(responseMessage);

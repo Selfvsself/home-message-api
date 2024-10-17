@@ -1,4 +1,4 @@
-package ru.selfvsself.home_texttotext_api.model.client;
+package ru.selfvsself.home_texttotext_api.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

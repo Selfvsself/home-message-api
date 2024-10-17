@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.UuidGenerator;
-import ru.selfvsself.home_texttotext_api.model.client.Role;
+import ru.selfvsself.home_texttotext_api.model.Role;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;

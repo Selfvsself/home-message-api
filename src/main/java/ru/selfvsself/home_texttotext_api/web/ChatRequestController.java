@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.selfvsself.home_texttotext_api.model.ChatRequest;
+import ru.selfvsself.model.ChatRequest;
 import ru.selfvsself.home_texttotext_api.service.ChatResponseService;
 
 import java.util.UUID;
