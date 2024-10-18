@@ -4,14 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.selfvsself.home_texttotext_api.model.*;
-import ru.selfvsself.model.ChatRequest;
-import ru.selfvsself.model.ChatResponse;
 import ru.selfvsself.home_texttotext_api.model.database.Message;
+import ru.selfvsself.home_texttotext_api.model.database.MessageFactory;
 import ru.selfvsself.home_texttotext_api.model.database.MessageStatus;
 import ru.selfvsself.home_texttotext_api.model.database.User;
 import ru.selfvsself.home_texttotext_api.service.database.MessageService;
 import ru.selfvsself.home_texttotext_api.service.database.UserService;
 import ru.selfvsself.home_texttotext_api.service.llm.ModelSelectionService;
+import ru.selfvsself.model.ChatRequest;
+import ru.selfvsself.model.ChatResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +36,19 @@ public class ChatResponseService {
     public ChatResponse processRequest(ChatRequest chatRequest) {
         User user = userService.addUserIfNotExists(chatRequest.getChatId(), chatRequest.getUserName());
 
-        Message requestMessage = createErrorRequestMessage(user.getId(), chatRequest);
-        Message responseMessage = createErrorResponseMessage(user.getId(), requestMessage.getId());
+        Message requestMessage = MessageFactory.createErrorResponse(user.getId(), Role.user);
+        requestMessage.setId(chatRequest.getRequestId());
+        requestMessage.setContent(chatRequest.getContent());
+        Message responseMessage = MessageFactory.createErrorResponse(user.getId(), Role.assistant);
+        responseMessage.setRequestId(requestMessage.getId());
 
         ModelResponse modelResponse = getAnswer(chatRequest, user);
         if (ResponseType.SUCCESS.equals(modelResponse.getType())) {
-            requestMessage = createSuccessRequestMessage(requestMessage, modelResponse);
-            responseMessage = createSuccessResponseMessage(responseMessage, modelResponse);
+            requestMessage = MessageFactory.createSuccess(requestMessage, modelResponse.getModel());
+            requestMessage.setTokens(modelResponse.getRequestTokens());
+            responseMessage = MessageFactory.createSuccess(responseMessage, modelResponse.getModel());
+            responseMessage.setTokens(modelResponse.getResponseTokens());
+            responseMessage.setContent(modelResponse.getContent());
         }
 
         requestMessage = messageService.createMessage(requestMessage);
@@ -53,59 +60,6 @@ public class ChatResponseService {
                 .model(responseMessage.getModel())
                 .content(responseMessage.getContent())
                 .requestId(modelResponse.getRequestId())
-                .build();
-    }
-
-    private Message createErrorRequestMessage(UUID userId, ChatRequest chatRequest) {
-        return Message
-                .builder()
-                .id(chatRequest.getRequestId())
-                .userId(userId)
-                .role(Role.user)
-                .status(MessageStatus.PROCESSING_ERROR)
-                .tokens(0)
-                .content(chatRequest.getContent())
-                .build();
-    }
-
-    private Message createErrorResponseMessage(UUID userId, UUID requestMessageId) {
-        Message responseMessage = Message
-                .builder()
-                .userId(userId)
-                .role(Role.assistant)
-                .status(MessageStatus.PROCESSING_ERROR)
-                .tokens(0)
-                .content("Error")
-                .requestId(requestMessageId)
-                .build();
-        messageService.createMessage(responseMessage);
-        return responseMessage;
-    }
-
-    private Message createSuccessRequestMessage(Message requestMessage, ModelResponse modelResponse) {
-        return Message
-                .builder()
-                .id(requestMessage.getId())
-                .userId(requestMessage.getUserId())
-                .content(requestMessage.getContent())
-                .role(Role.user)
-                .status(MessageStatus.PROCESSED)
-                .tokens(modelResponse.getRequestTokens())
-                .model(modelResponse.getModel())
-                .build();
-    }
-
-    private Message createSuccessResponseMessage(Message responseMessage, ModelResponse modelResponse) {
-        return Message
-                .builder()
-                .id(responseMessage.getId())
-                .userId(responseMessage.getUserId())
-                .requestId(responseMessage.getRequestId())
-                .role(Role.assistant)
-                .status(MessageStatus.PROCESSED)
-                .tokens(modelResponse.getResponseTokens())
-                .content(modelResponse.getContent())
-                .model(modelResponse.getModel())
                 .build();
     }
 
