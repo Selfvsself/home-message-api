@@ -39,6 +39,7 @@ public class ModelSelectionService {
             }
         }
         modelResponse.setRequestId(modelRequest.getRequestId());
+        modelResponse.setHistoryTokens(modelRequest.getHistoryTokens());
         return modelResponse;
     }
 }

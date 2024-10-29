@@ -16,4 +16,5 @@ public class ModelRequest extends Completion {
     private UUID requestId;
     @Builder.Default
     private boolean useLocalModel = true;
+    private Integer historyTokens;
 }

@@ -14,9 +14,7 @@ import ru.selfvsself.home_texttotext_api.service.llm.ModelSelectionService;
 import ru.selfvsself.model.ChatRequest;
 import ru.selfvsself.model.ChatResponse;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -45,7 +43,7 @@ public class ChatResponseService {
         ModelResponse modelResponse = getAnswer(chatRequest, user);
         if (ResponseType.SUCCESS.equals(modelResponse.getType())) {
             requestMessage = MessageFactory.createSuccess(requestMessage, modelResponse.getModel());
-            requestMessage.setTokens(modelResponse.getRequestTokens());
+            requestMessage.setTokens(modelResponse.getRequestTokens() - modelResponse.getHistoryTokens());
             responseMessage = MessageFactory.createSuccess(responseMessage, modelResponse.getModel());
             responseMessage.setTokens(modelResponse.getResponseTokens());
             responseMessage.setContent(modelResponse.getContent());
@@ -74,19 +72,22 @@ public class ChatResponseService {
     private ModelRequest createModelRequest(ChatRequest chatRequest, UUID userId) {
         List<CompletionMessage> completionMessages = new ArrayList<>();
         completionMessages.add(new CompletionMessage(Role.user, chatRequest.getContent()));
+        int historyTokens = 0;
         if (chatRequest.isUseMessageHistory()) {
             List<Message> messages = messageService.getLast20Messages(userId, MessageStatus.PROCESSED);
             messages = getLimitedMessagesByTokens(messages, MAX_TOKENS);
-            List<CompletionMessage> history = messages.stream()
-                    .map(m -> new CompletionMessage(m.getRole(), m.getContent()))
-                    .toList();
-            completionMessages.addAll(history);
+            for (Message message : messages) {
+                completionMessages.add(new CompletionMessage(message.getRole(), message.getContent()));
+                historyTokens += message.getTokens();
+            }
         }
+        Collections.reverse(completionMessages);
         return ModelRequest
                 .builder()
                 .messages(completionMessages)
                 .requestId(chatRequest.getRequestId())
                 .useLocalModel(chatRequest.isUseLocalModel())
+                .historyTokens(historyTokens)
                 .build();
     }
 

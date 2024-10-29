@@ -15,6 +15,7 @@ public class ModelResponse {
     private ResponseType type;
     private Integer requestTokens;
     private Integer responseTokens;
+    private Integer historyTokens;
     private UUID requestId;
 
     public ModelResponse() {

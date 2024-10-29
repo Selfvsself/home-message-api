@@ -41,6 +41,6 @@ public class RequestConsumer {
         }
         ChatResponse response = chatResponseService.processRequest(request);
         log.info("Response: {}", response);
-        kafkaTemplate.send(responseTopic, response);
+        kafkaTemplate.send(responseTopic, request.getRequestId().toString(), response);
     }
 }
