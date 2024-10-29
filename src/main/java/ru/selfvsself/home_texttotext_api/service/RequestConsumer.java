@@ -29,18 +29,23 @@ public class RequestConsumer {
     public void requestProcessing(ChatRequest request) {
         if (request.getChatId() == null) {
             log.error("'chatId' field must not be empty");
+            return;
         }
         if (!StringUtils.hasLength(request.getContent())) {
             log.error("'content' field must not be empty for chatId = {}", request.getChatId());
+            return;
         }
         if (!StringUtils.hasLength(request.getUserName())) {
-            log.error("'userName' field must not be empty for chatId = {}", request.getChatId());
+            log.info("'userName' field must not be empty for chatId = {}, set default name", request.getChatId());
+            request.setUserName("unknown");
         }
         if (request.getRequestId() == null) {
-            request.setRequestId(UUID.randomUUID());
+            UUID requestId = UUID.randomUUID();
+            log.info("'requestId' field must not be empty for chatId = {}, set random {}", request.getChatId(), requestId);
+            request.setRequestId(requestId);
         }
         ChatResponse response = chatResponseService.processRequest(request);
         log.info("Response: {}", response);
-        kafkaTemplate.send(responseTopic, request.getRequestId().toString(), response);
+        kafkaTemplate.send(responseTopic, request.getChatId().toString(), response);
     }
 }
