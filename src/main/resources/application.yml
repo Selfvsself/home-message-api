@@ -23,6 +23,14 @@ spring:
     hibernate:
       ddl-auto: update
 
+logging:
+  level:
+    root: INFO
+  file:
+     path: logs
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
 server:
   port: ${PORT_NUMBER}
 
