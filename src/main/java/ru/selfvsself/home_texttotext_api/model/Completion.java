@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,6 +20,6 @@ public class Completion {
     public Completion(Completion completion) {
         this.model = completion.getModel();
         this.temperature = completion.getTemperature();
-        this.messages = completion.getMessages();
+        this.messages = new ArrayList<>(completion.getMessages());
     }
 }
