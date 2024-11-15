@@ -1,4 +1,4 @@
-package ru.selfvsself.home_texttotext_api.model;
+package ru.selfvsself.model;
 
 public enum ResponseType {
     SUCCESS,
