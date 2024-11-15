@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import ru.selfvsself.model.ChatRequest;
 import ru.selfvsself.model.ChatResponse;
+import ru.selfvsself.model.ResponseType;
 
 import java.util.UUID;
 
@@ -27,25 +28,32 @@ public class RequestConsumer {
 
     @KafkaListener(topics = "${kafka.topic.request}", groupId = "${kafka.group}", containerFactory = "textRequestKafkaListenerContainerFactory")
     public void requestProcessing(ChatRequest request) {
-        if (request.getChatId() == null) {
-            log.error("'chatId' field must not be empty");
+        if (request.getUserId() == null) {
+            log.error("'userId' field must not be empty");
             return;
         }
         if (!StringUtils.hasLength(request.getContent())) {
-            log.error("'content' field must not be empty for chatId = {}", request.getChatId());
+            log.error("'content' field must not be empty for userId = {}", request.getUserId());
             return;
-        }
-        if (!StringUtils.hasLength(request.getUserName())) {
-            log.info("'userName' field must not be empty for chatId = {}, set default name", request.getChatId());
-            request.setUserName("unknown");
         }
         if (request.getRequestId() == null) {
             UUID requestId = UUID.randomUUID();
-            log.info("'requestId' field must not be empty for chatId = {}, set random {}", request.getChatId(), requestId);
+            log.info("'requestId' field must not be empty for userId = {}, set random {}", request.getUserId(), requestId);
             request.setRequestId(requestId);
         }
-        ChatResponse response = chatResponseService.processRequest(request);
-        log.info("Response: {}", response);
-        kafkaTemplate.send(responseTopic, request.getChatId().toString(), response);
+        ChatResponse response = ChatResponse.builder()
+                .userId(request.getUserId())
+                .requestId(request.getRequestId())
+                .content("Error")
+                .model("Error")
+                .type(ResponseType.ERROR)
+                .build();
+        try {
+            response = chatResponseService.processRequest(request);
+            log.info("Response: {}", response);
+        } catch (Exception e) {
+            log.error("Error during processing request: {}", request, e);
+        }
+        kafkaTemplate.send(responseTopic, request.getUserId().toString(), response);
     }
 }

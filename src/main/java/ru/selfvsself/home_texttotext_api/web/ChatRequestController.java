@@ -28,10 +28,7 @@ public class ChatRequestController {
         if (!StringUtils.hasLength(request.getContent())) {
             return new ResponseEntity<>("'content' field must not be empty", HttpStatus.BAD_REQUEST);
         }
-        if (!StringUtils.hasLength(request.getUserName())) {
-            return new ResponseEntity<>("'userName' field must not be empty", HttpStatus.BAD_REQUEST);
-        }
-        if (request.getChatId() == null) {
+        if (request.getUserId() == null) {
             return new ResponseEntity<>("'chatId' field must not be empty", HttpStatus.BAD_REQUEST);
         }
         if (request.getRequestId() == null) {

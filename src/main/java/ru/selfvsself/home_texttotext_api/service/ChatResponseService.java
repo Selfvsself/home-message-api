@@ -3,44 +3,47 @@ package ru.selfvsself.home_texttotext_api.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.selfvsself.home_texttotext_api.model.*;
+import ru.selfvsself.home_texttotext_api.model.CompletionMessage;
+import ru.selfvsself.home_texttotext_api.model.ModelRequest;
+import ru.selfvsself.home_texttotext_api.model.ModelResponse;
+import ru.selfvsself.home_texttotext_api.model.Role;
 import ru.selfvsself.home_texttotext_api.model.database.Message;
 import ru.selfvsself.home_texttotext_api.model.database.MessageFactory;
 import ru.selfvsself.home_texttotext_api.model.database.MessageStatus;
-import ru.selfvsself.home_texttotext_api.model.database.User;
 import ru.selfvsself.home_texttotext_api.service.database.MessageService;
-import ru.selfvsself.home_texttotext_api.service.database.UserService;
 import ru.selfvsself.home_texttotext_api.service.llm.ModelSelectionService;
 import ru.selfvsself.model.ChatRequest;
 import ru.selfvsself.model.ChatResponse;
+import ru.selfvsself.model.ResponseType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
 public class ChatResponseService {
-    private final UserService userService;
     private final MessageService messageService;
     private final ModelSelectionService modelSelectionService;
     @Value("${chat.max-tokens}")
     private Integer MAX_TOKENS;
 
-    public ChatResponseService(UserService userService, MessageService messageService, ModelSelectionService modelSelectionService) {
-        this.userService = userService;
+    public ChatResponseService(MessageService messageService, ModelSelectionService modelSelectionService) {
         this.messageService = messageService;
         this.modelSelectionService = modelSelectionService;
     }
 
     public ChatResponse processRequest(ChatRequest chatRequest) {
-        User user = userService.addUserIfNotExists(chatRequest.getChatId(), chatRequest.getUserName());
+        UUID userId = chatRequest.getUserId();
 
-        Message requestMessage = MessageFactory.createErrorResponse(user.getId(), Role.user);
+        Message requestMessage = MessageFactory.createErrorResponse(userId, Role.user);
         requestMessage.setId(chatRequest.getRequestId());
         requestMessage.setContent(chatRequest.getContent());
-        Message responseMessage = MessageFactory.createErrorResponse(user.getId(), Role.assistant);
+        Message responseMessage = MessageFactory.createErrorResponse(userId, Role.assistant);
         responseMessage.setRequestId(requestMessage.getId());
 
-        ModelResponse modelResponse = getAnswer(chatRequest, user);
+        ModelResponse modelResponse = getAnswer(chatRequest, userId);
         if (ResponseType.SUCCESS.equals(modelResponse.getType())) {
             requestMessage = MessageFactory.createSuccess(requestMessage, modelResponse.getModel());
             requestMessage.setTokens(modelResponse.getRequestTokens() - modelResponse.getHistoryTokens());
@@ -53,16 +56,16 @@ public class ChatResponseService {
         responseMessage.setRequestId(requestMessage.getId());
         responseMessage = messageService.createMessage(responseMessage);
         return ChatResponse.builder()
-                .chatId(chatRequest.getChatId())
-                .userName(chatRequest.getUserName())
+                .userId(userId)
                 .model(responseMessage.getModel())
                 .content(responseMessage.getContent())
                 .requestId(modelResponse.getRequestId())
+                .type(modelResponse.getType())
                 .build();
     }
 
-    private ModelResponse getAnswer(ChatRequest chatRequest, User user) {
-        ModelRequest modelRequest = createModelRequest(chatRequest, user.getId());
+    private ModelResponse getAnswer(ChatRequest chatRequest, UUID userId) {
+        ModelRequest modelRequest = createModelRequest(chatRequest, userId);
         ModelResponse modelResponse;
         modelResponse = modelSelectionService.getAnswer(modelRequest);
         log.info(modelResponse.toString());

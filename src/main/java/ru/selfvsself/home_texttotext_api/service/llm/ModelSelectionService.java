@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.selfvsself.home_texttotext_api.model.ModelRequest;
 import ru.selfvsself.home_texttotext_api.model.ModelResponse;
-import ru.selfvsself.home_texttotext_api.model.ResponseType;
+import ru.selfvsself.model.ResponseType;
 
 import java.util.List;
 

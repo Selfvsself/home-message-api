@@ -3,6 +3,7 @@ package ru.selfvsself.home_texttotext_api.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import ru.selfvsself.model.ResponseType;
 
 import java.util.UUID;
 

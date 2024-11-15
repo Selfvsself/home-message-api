@@ -3,6 +3,7 @@ package ru.selfvsself.home_texttotext_api.service.llm;
 import lombok.extern.slf4j.Slf4j;
 import ru.selfvsself.home_texttotext_api.client.api.TextModelClient;
 import ru.selfvsself.home_texttotext_api.model.*;
+import ru.selfvsself.model.ResponseType;
 
 import java.util.Optional;
 
