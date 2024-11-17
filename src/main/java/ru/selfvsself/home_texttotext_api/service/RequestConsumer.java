@@ -10,8 +10,6 @@ import ru.selfvsself.model.ChatRequest;
 import ru.selfvsself.model.ChatResponse;
 import ru.selfvsself.model.ResponseType;
 
-import java.util.UUID;
-
 @Slf4j
 @Service
 public class RequestConsumer {
@@ -28,21 +26,24 @@ public class RequestConsumer {
 
     @KafkaListener(topics = "${kafka.topic.request}", groupId = "${kafka.group}", containerFactory = "textRequestKafkaListenerContainerFactory")
     public void requestProcessing(ChatRequest request) {
-        if (request.getUserId() == null) {
-            log.error("'userId' field must not be empty");
-            return;
+        if (request.getRequestId() == null) {
+            log.error("'requestId' field must not be empty for request = {}", request);
+            throw new IllegalArgumentException("Request id is null, request is " + request);
+        }
+        if (request.getParticipant() == null) {
+            log.error("'participant' field must not be empty for request = {}", request);
+            throw new IllegalArgumentException("Participant is null, request is " + request);
+        }
+        if (request.getParticipant().getUserId() == null) {
+            log.error("'userId' field must not be empty for request = {}", request);
+            throw new IllegalArgumentException("UserId is null, request is " + request);
         }
         if (!StringUtils.hasLength(request.getContent())) {
-            log.error("'content' field must not be empty for userId = {}", request.getUserId());
-            return;
-        }
-        if (request.getRequestId() == null) {
-            UUID requestId = UUID.randomUUID();
-            log.info("'requestId' field must not be empty for userId = {}, set random {}", request.getUserId(), requestId);
-            request.setRequestId(requestId);
+            log.error("'content' field must not be empty for request = {}", request);
+            throw new IllegalArgumentException("content is null, request is " + request);
         }
         ChatResponse response = ChatResponse.builder()
-                .userId(request.getUserId())
+                .participant(request.getParticipant())
                 .requestId(request.getRequestId())
                 .content("Error")
                 .model("Error")
@@ -54,6 +55,6 @@ public class RequestConsumer {
         } catch (Exception e) {
             log.error("Error during processing request: {}", request, e);
         }
-        kafkaTemplate.send(responseTopic, request.getUserId().toString(), response);
+        kafkaTemplate.send(responseTopic, request.getParticipant().getUserId().toString(), response);
     }
 }
