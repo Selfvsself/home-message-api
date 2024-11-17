@@ -29,12 +29,15 @@ public class RequestConsumer {
     @KafkaListener(topics = "${kafka.topic.request}", groupId = "${kafka.group}", containerFactory = "textRequestKafkaListenerContainerFactory")
     public void requestProcessing(ChatRequest request) {
         if (request.getRequestId() == null) {
+            log.error("'requestId' field must not be empty for request = {}", request);
             throw new IllegalArgumentException("Request id is null, request is " + request);
         }
         if (request.getParticipant() == null) {
+            log.error("'participant' field must not be empty for request = {}", request);
             throw new IllegalArgumentException("Participant is null, request is " + request);
         }
         if (request.getParticipant().getUserId() == null) {
+            log.error("'userId' field must not be empty for request = {}", request);
             throw new IllegalArgumentException("UserId is null, request is " + request);
         }
         if (!StringUtils.hasLength(request.getContent())) {
