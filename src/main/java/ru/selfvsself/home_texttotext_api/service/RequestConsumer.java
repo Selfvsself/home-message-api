@@ -10,8 +10,6 @@ import ru.selfvsself.model.ChatRequest;
 import ru.selfvsself.model.ChatResponse;
 import ru.selfvsself.model.ResponseType;
 
-import java.util.UUID;
-
 @Slf4j
 @Service
 public class RequestConsumer {
