@@ -10,7 +10,7 @@ import java.util.UUID;
 public class ChatRequest {
     private String content;
     private UUID requestId;
-    private UUID userId;
+    private Participant participant;
     private boolean useMessageHistory = true;
     private boolean useLocalModel = true;
 }

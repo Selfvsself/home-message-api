@@ -35,7 +35,7 @@ public class ChatResponseService {
     }
 
     public ChatResponse processRequest(ChatRequest chatRequest) {
-        UUID userId = chatRequest.getUserId();
+        UUID userId = chatRequest.getParticipant().getUserId();
 
         Message requestMessage = MessageFactory.createErrorResponse(userId, Role.user);
         requestMessage.setId(chatRequest.getRequestId());
@@ -56,7 +56,7 @@ public class ChatResponseService {
         responseMessage.setRequestId(requestMessage.getId());
         responseMessage = messageService.createMessage(responseMessage);
         return ChatResponse.builder()
-                .userId(userId)
+                .participant(chatRequest.getParticipant())
                 .model(responseMessage.getModel())
                 .content(responseMessage.getContent())
                 .requestId(modelResponse.getRequestId())
