@@ -32,7 +32,7 @@ public class ChatRequestController {
         if (request.getParticipant().getUserId() == null) {
             return new ResponseEntity<>("UserId is null, request is " + request, HttpStatus.BAD_REQUEST);
         }
-        if (!StringUtils.hasLength(request.getContent())) {
+        if (request.getContent() != null && !StringUtils.hasLength(request.getContent().getText())) {
             return new ResponseEntity<>("content is null, request is " + request, HttpStatus.BAD_REQUEST);
         }
 

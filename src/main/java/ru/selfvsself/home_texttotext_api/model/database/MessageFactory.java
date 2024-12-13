@@ -11,7 +11,7 @@ public class MessageFactory {
                 .role(role)
                 .status(MessageStatus.PROCESSING_ERROR)
                 .tokens(0)
-                .content("Error")
+                .text("Error")
                 .build();
     }
 
@@ -20,7 +20,7 @@ public class MessageFactory {
                 .id(message.getId())
                 .requestId(message.getRequestId())
                 .userId(message.getUserId())
-                .content(message.getContent())
+                .text(message.getText())
                 .role(message.getRole())
                 .status(MessageStatus.PROCESSED)
                 .model(model)
