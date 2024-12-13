@@ -29,7 +29,7 @@ public class Message {
     private Integer tokens;
 
     @Column(columnDefinition = "TEXT")
-    private String content;
+    private String text;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

@@ -39,7 +39,7 @@ public class ChatResponseService {
 
         Message requestMessage = MessageFactory.createErrorResponse(userId, Role.user);
         requestMessage.setId(chatRequest.getRequestId());
-        requestMessage.setContent(chatRequest.getContent());
+        requestMessage.setText(chatRequest.getContent().getText());
         Message responseMessage = MessageFactory.createErrorResponse(userId, Role.assistant);
         responseMessage.setRequestId(requestMessage.getId());
 
@@ -49,7 +49,7 @@ public class ChatResponseService {
             requestMessage.setTokens(modelResponse.getRequestTokens() - modelResponse.getHistoryTokens());
             responseMessage = MessageFactory.createSuccess(responseMessage, modelResponse.getModel());
             responseMessage.setTokens(modelResponse.getResponseTokens());
-            responseMessage.setContent(modelResponse.getContent());
+            responseMessage.setText(modelResponse.getContent());
         }
 
         requestMessage = messageService.createMessage(requestMessage);
@@ -58,7 +58,7 @@ public class ChatResponseService {
         return ChatResponse.builder()
                 .participant(chatRequest.getParticipant())
                 .model(responseMessage.getModel())
-                .content(responseMessage.getContent())
+                .content(responseMessage.getText())
                 .requestId(modelResponse.getRequestId())
                 .type(modelResponse.getType())
                 .build();
@@ -74,13 +74,13 @@ public class ChatResponseService {
 
     private ModelRequest createModelRequest(ChatRequest chatRequest, UUID userId) {
         List<CompletionMessage> completionMessages = new ArrayList<>();
-        completionMessages.add(new CompletionMessage(Role.user, chatRequest.getContent()));
+        completionMessages.add(new CompletionMessage(Role.user, chatRequest.getContent().getText()));
         int historyTokens = 0;
         if (chatRequest.isUseMessageHistory()) {
             List<Message> messages = messageService.getLast20Messages(userId, MessageStatus.PROCESSED);
             messages = getLimitedMessagesByTokens(messages, MAX_TOKENS);
             for (Message message : messages) {
-                completionMessages.add(new CompletionMessage(message.getRole(), message.getContent()));
+                completionMessages.add(new CompletionMessage(message.getRole(), message.getText()));
                 historyTokens += message.getTokens();
             }
         }

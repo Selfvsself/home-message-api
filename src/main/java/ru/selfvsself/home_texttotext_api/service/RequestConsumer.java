@@ -38,7 +38,7 @@ public class RequestConsumer {
             log.error("'userId' field must not be empty for request = {}", request);
             throw new IllegalArgumentException("UserId is null, request is " + request);
         }
-        if (!StringUtils.hasLength(request.getContent())) {
+        if (request.getContent() != null && !StringUtils.hasLength(request.getContent().getText())) {
             log.error("'content' field must not be empty for request = {}", request);
             throw new IllegalArgumentException("content is null, request is " + request);
         }
