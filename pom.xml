@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ru.selfvsself</groupId>
-    <artifactId>home-texttotext-api</artifactId>
+    <artifactId>home-message-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>home-texttotext-api</name>
+    <name>home-message-api</name>
     <url/>
     <licenses>
         <license/>
@@ -93,7 +93,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>ru.selfvsself.home_texttotext_api.HomeTextToTextApiApplication</mainClass>
+                    <mainClass>ru.selfvsself.home.message.HomeMessageApiApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>

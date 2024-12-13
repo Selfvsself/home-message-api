@@ -2,7 +2,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   application:
-    name: home-texttotext-api
+    name: home-message-api
   datasource:
     userdb:
       jdbc-url: ${USER_DB_URL}
